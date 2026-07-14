@@ -1,0 +1,147 @@
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3.5
+  Exclude:
+    - "node_modules/**/*"
+    - "vendor/**/*"
+    - "bin/**/*"
+    - "tmp/**/*"
+    - "log/**/*"
+    - "Gemfile.lock"
+    - "db/schema.rb"
+
+Layout/LineLength:
+  Max: 100
+
+Naming/MethodName:
+  EnforcedStyle: snake_case
+
+Naming/ClassAndModuleCamelCase:
+  Enabled: true
+
+Naming/VariableName:
+  EnforcedStyle: snake_case
+
+Layout/IndentationWidth:
+  Width: 2
+
+Layout/TrailingWhitespace:
+  Enabled: true
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: true
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: true
+
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/AndOr:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/WordArray:
+  EnforcedStyle: percent
+
+Style/SymbolArray:
+  EnforcedStyle: percent
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: true
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: true
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19
+
+Style/ArrayCoercion:
+  Enabled: true
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/BlockDelimiters:
+  EnforcedStyle: line_count_based
+
+Style/SafeNavigation:
+  Enabled: true
+
+Style/MethodCallWithArgsParentheses:
+  EnforcedStyle: require_parentheses
+
+Style/IfUnlessModifier:
+  Enabled: true
+
+Style/Lambda:
+  EnforcedStyle: literal
+
+Style/MethodDefParentheses:
+  EnforcedStyle: require_parentheses
+
+Style/CaseEquality:
+  Enabled: true
+
+Style/AccessModifierDeclarations:
+  EnforcedStyle: group
+
+Style/MutableConstant:
+  Enabled: true
+
+Style/NumericLiterals:
+  Enabled: true
+  MinDigits: 5
+
+Style/Proc:
+  Enabled: true
+
+Style/PreferredHashMethods:
+  Enabled: true
+  EnforcedStyle: short
+
+Metrics/BlockLength:
+  Exclude:
+    - "Rakefile"
+    - "Gemfile"
+    - "config.ru"
+    - "Guardfile"
+    - "Capfile"
+    - "Vagrantfile"
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/ModuleLength:
+  Max: 300
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/PerceivedComplexity:
+  Max: 8
+
+Metrics/CyclomaticComplexity:
+  Max: 6
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+
+Layout/SpaceInsideBlockBraces:
+  EnforcedStyle: space
+
+Layout/SpaceAroundOperators:
+  Enabled: true
+
+Lint/UnusedBlockArgument:
+  Enabled: true
