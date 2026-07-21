@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 # An object-relational mapper
 # https://guides.rubyonrails.org/active_record_basics.html
-gem "activerecord", "~> 6.1"
+gem "activerecord", "~> 7.1"
 
 # Run common tasks from the command line
 # https://github.com/ruby/rake
@@ -15,6 +15,8 @@ gem "sqlite3", "~> 1.7"
 
 # Require all files in a folder
 gem "require_all", "~> 3.0"
+
+gem "standalone_migrations"
 
 # These gems will only be used when we are running the application locally
 group :development do
