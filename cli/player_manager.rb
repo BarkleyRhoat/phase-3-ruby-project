@@ -49,6 +49,14 @@ class PlayerManager
     end
   end
 
+  def delete_player
+    player = select_player
+    return unless player
+
+    player.destroy
+    puts "✅ Player '#{player.name}' deleted."
+  end
+
   private
 
   def select_player

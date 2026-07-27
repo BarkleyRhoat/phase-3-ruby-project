@@ -25,6 +25,8 @@ class Menu
       when "3"
         @player_manager.update_player
       when "4"
+        @player_manager.delete_player
+      when "5"
         puts "Goodbye!"
         break
       else
@@ -41,7 +43,8 @@ class Menu
     puts "1. Add player"
     puts "2. List players"
     puts "3. Update player"
-    puts "4. Exit"
+    puts "4. Delete player"
+    puts "5. Exit"
     puts
   end
 end
