@@ -9,7 +9,7 @@ class Menu
 
   def run
     puts "Welcome to Golf Score Tracker!"
-    puts 
+    puts
 
     loop do
       display_menu
@@ -23,6 +23,8 @@ class Menu
       when "2"
         @player_manager.list_players
       when "3"
+        @player_manager.update_player
+      when "4"
         puts "Goodbye!"
         break
       else
@@ -38,7 +40,8 @@ class Menu
     puts "== Player Management =="
     puts "1. Add player"
     puts "2. List players"
-    puts "3. Exit"
+    puts "3. Update player"
+    puts "4. Exit"
     puts
   end
 end
