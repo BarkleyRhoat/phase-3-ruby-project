@@ -21,6 +21,7 @@ gem "standalone_migrations"
 # These gems will only be used when we are running the application locally
 group :development do
   gem "pry", "~> 0.14.1"
+  gem "ostruct"
 
   # Ruby linter and formatter
   # https://github.com/rubocop/rubocop
