@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 require "readline"
 
 class RoundManager
-  def run 
+  def run
     loop do
       display_menu
 
@@ -18,6 +19,10 @@ class RoundManager
       when "4"
         delete_round
       when "5"
+        view_rounds_by_player
+      when "6"
+        view_rounds_by_course
+      when "7"
         break
       else
         puts "Invalid option. Please try again."
@@ -72,7 +77,7 @@ class RoundManager
     puts "Current date: #{round.date}"
     date = Readline.readline("Enter new date (press Enter to keep '#{round.date}'): ", true)
 
-     round.score = score
+    round.score = score
     round.date = date unless date.empty?
 
     if round.save
@@ -91,6 +96,38 @@ class RoundManager
     puts "✅ Round deleted."
   end
 
+  def view_rounds_by_player
+    player = select_player
+    return unless player
+
+    rounds = player.rounds
+    if rounds.empty?
+      puts "No rounds found for #{player.name}."
+      return
+    end
+
+    puts "Rounds for #{player.name}:"
+    rounds.each do |round|
+      puts " #{round.id}. #{round.course.name} | Score #{round.score} | #{round.date}"
+    end
+  end
+
+  def view_rounds_by_course
+    course = select_course
+    return unless course
+
+    rounds = course.rounds
+    if rounds.empty?
+      puts "No rounds found at #{course.name}."
+      return
+    end
+
+    puts "Rounds at #{course.name}:"
+    rounds.each do |round|
+      puts " #{round.id}. #{round.player.name} | Score #{round.score} | #{round.date}"
+    end
+  end
+
   private
 
   def display_menu
@@ -99,7 +136,9 @@ class RoundManager
     puts "2. List rounds"
     puts "3. Update round"
     puts "4. Delete round"
-    puts "5. Back to main menu"
+    puts "5. View rounds by player"
+    puts "6. View rounds by course"
+    puts "7. Back to main menu"
     puts
   end
 
@@ -119,9 +158,7 @@ class RoundManager
     id = Readline.readline("Enter player number: ", true)
     player = Player.find_by(id: id)
 
-    if player.nil?
-      puts "❌ Player not found."
-    end
+    puts "❌ Player not found." if player.nil?
 
     player
   end
@@ -142,9 +179,7 @@ class RoundManager
     id = Readline.readline("Enter course number: ", true)
     course = Course.find_by(id: id)
 
-    if course.nil?
-      puts "❌ Course not found."
-    end
+    puts "❌ Course not found." if course.nil?
 
     course
   end
@@ -165,9 +200,7 @@ class RoundManager
     id = Readline.readline("Enter round number: ", true)
     round = Round.find_by(id: id)
 
-    if round.nil?
-      puts "❌ Round not found."
-    end
+    puts "❌ Round not found." if round.nil?
 
     round
   end
