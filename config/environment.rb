@@ -14,3 +14,4 @@ ActiveRecord::Base.establish_connection(db_config[ENV.fetch("RACK_ENV", "develop
 
 # Require in all model files
 require_all "app/models"
+require_relative "../cli/player_manager"
