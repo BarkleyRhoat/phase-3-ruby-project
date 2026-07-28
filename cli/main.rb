@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 
+require "readline"
 require_relative "../config/environment"
 require_relative "player_manager"
 require_relative "course_manager"
+require_relative "round_manager"
 
 class Menu
   def run
@@ -12,8 +14,7 @@ class Menu
     loop do
       display_menu
 
-      print "Choose an option: "
-      choice = gets.chomp
+      choice = Readline.readline("Choose an option: ", true).chomp
 
       case choice
       when "1"
@@ -21,6 +22,8 @@ class Menu
       when "2"
         CourseManager.new.run
       when "3"
+        RoundManager.new.run
+      when "4"
         puts "Goodbye!"
         break
       else
@@ -37,7 +40,8 @@ class Menu
     puts "== Main Menu =="
     puts "1. Player Management"
     puts "2. Course Management"
-    puts "3. Exit"
+    puts "3. Round Management"
+    puts "4. Exit"
     puts
   end
 end

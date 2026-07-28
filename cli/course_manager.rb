@@ -7,8 +7,7 @@ class CourseManager
     loop do
       display_menu
 
-      print "Choose an option: "
-      choice = gets.chomp
+      choice = Readline.readline("Choose an option: ", true).chomp
 
       case choice
       when "1"
@@ -37,7 +36,7 @@ class CourseManager
     course = Course.new(name: name, par: par)
 
     if course.save
-      puts "✅ Course "
+      puts "✅ Course '#{course.name}' created."
     else
       puts "❌ Failed to create course:"
       course.errors.full_messages.each { |msg| puts " - #{msg}" }
