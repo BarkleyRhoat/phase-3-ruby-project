@@ -2,11 +2,9 @@
 
 require_relative "../config/environment"
 require_relative "player_manager"
-class Menu
-  def initialize
-    @player_manager = PlayerManager.new
-  end
+require_relative "course_manager"
 
+class Menu
   def run
     puts "Welcome to Golf Score Tracker!"
     puts
@@ -19,19 +17,16 @@ class Menu
 
       case choice
       when "1"
-        @player_manager.add_player
+        PlayerManager.new.run
       when "2"
-        @player_manager.list_players
+        CourseManager.new.run
       when "3"
-        @player_manager.update_player
-      when "4"
-        @player_manager.delete_player
-      when "5"
         puts "Goodbye!"
         break
       else
         puts "Invalid option. Please try again."
       end
+
       puts
     end
   end
@@ -39,12 +34,10 @@ class Menu
   private
 
   def display_menu
-    puts "== Player Management =="
-    puts "1. Add player"
-    puts "2. List players"
-    puts "3. Update player"
-    puts "4. Delete player"
-    puts "5. Exit"
+    puts "== Main Menu =="
+    puts "1. Player Management"
+    puts "2. Course Management"
+    puts "3. Exit"
     puts
   end
 end

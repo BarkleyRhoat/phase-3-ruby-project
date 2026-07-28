@@ -3,6 +3,32 @@
 require "readline"
 
 class PlayerManager
+  def run
+    loop do
+      display_menu
+
+      print "Choose an option: "
+      choice = gets.chomp
+
+      case choice
+      when "1"
+        add_player
+      when "2"
+        list_players
+      when "3"
+        update_player
+      when "4"
+        delete_player
+      when "5"
+        break
+      else
+        puts "Invalid option. Please try again."
+      end
+
+      puts
+    end
+  end
+
   def add_player
     name = Readline.readline("Enter player name: ", true)
 
@@ -58,6 +84,16 @@ class PlayerManager
   end
 
   private
+
+  def display_menu
+    puts "== Player Management =="
+    puts "1. Add player"
+    puts "2. List players"
+    puts "3. Update player"
+    puts "4. Delete player"
+    puts "5. Back to main menu"
+    puts
+  end
 
   def select_player
     list_players
