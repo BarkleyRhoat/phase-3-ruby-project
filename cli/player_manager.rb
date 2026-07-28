@@ -7,8 +7,7 @@ class PlayerManager
     loop do
       display_menu
 
-      print "Choose an option: "
-      choice = gets.chomp
+      choice = Readline.readline("Choose an option: ", true).chomp
 
       case choice
       when "1"
