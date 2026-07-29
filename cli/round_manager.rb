@@ -169,10 +169,14 @@ class RoundManager
       return nil
     end
 
-    puts "Players:"
-    players.each_with_index do |player, index|
-      puts " #{index + 1}. #{player.name}"
+    table = Terminal::Table.new do |t|
+      t.headings = ["#", "Name"]
+      t.rows = players.each_with_index.map do |player, index|
+        [index + 1, player.name]
+      end
     end
+
+    puts table
 
     input = Readline.readline("Enter player number: ", true).chomp.to_i
     player = players[input - 1]
@@ -190,10 +194,14 @@ class RoundManager
       return nil
     end
 
-    puts "Courses:"
-    courses.each_with_index do |course, index|
-      puts " #{index + 1}. #{course.name} (Par #{course.par})"
+    table = Terminal::Table.new do |t|
+      t.headings = ["#", "Name", "Par"]
+      t.rows = courses.each_with_index.map do |course, index|
+        [index + 1, course.name, course.par]
+      end
     end
+
+    puts table
 
     input = Readline.readline("Enter course number: ", true).chomp.to_i
     course = courses[input - 1]
