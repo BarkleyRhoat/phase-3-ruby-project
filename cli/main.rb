@@ -12,7 +12,7 @@ class Menu
   def run
     font = TTY::Font.new(:doom)
     puts font.write("Welcome").red
-        puts <<~ART
+    puts <<~ART
          '                   .  .
            \\              .         ' .             |>6>> 
           O>>         .                 'o           |
