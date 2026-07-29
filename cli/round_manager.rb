@@ -133,7 +133,9 @@ class RoundManager
   private
 
   def display_menu
-    puts "== Round Management =="
+    puts "\n=============================="
+    puts "     Round Management       "
+    puts "=============================="
     puts "1. Add round"
     puts "2. List rounds"
     puts "3. Update round"
@@ -141,7 +143,7 @@ class RoundManager
     puts "5. View rounds by player"
     puts "6. View rounds by course"
     puts "7. Back to main menu"
-    puts
+    puts "==============================\n"
   end
 
   def select_player

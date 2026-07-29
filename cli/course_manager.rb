@@ -92,13 +92,15 @@ class CourseManager
   private
 
   def display_menu
-    puts "== Course Management =="
+    puts "\n=============================="
+    puts "      Course Management       "
+    puts "=============================="
     puts "1. Add course"
     puts "2. List courses"
     puts "3. Update course"
     puts "4. Delete course"
     puts "5. Back to main menu"
-    puts
+    puts "==============================\n"
   end
 
   def select_course

@@ -37,12 +37,14 @@ class Menu
   private
 
   def display_menu
-    puts "== Main Menu =="
+    puts "\n=============================="
+    puts "        Golf Score Tracker        "
+    puts "=============================="
     puts "1. Player Management"
     puts "2. Course Management"
     puts "3. Round Management"
     puts "4. Exit"
-    puts
+    puts "==============================\n"
   end
 end
 

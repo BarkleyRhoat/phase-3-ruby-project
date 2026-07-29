@@ -87,13 +87,15 @@ class PlayerManager
   private
 
   def display_menu
-    puts "== Player Management =="
+    puts "\n=============================="
+    puts "      Player Management       "
+    puts "=============================="
     puts "1. Add player"
     puts "2. List players"
     puts "3. Update player"
     puts "4. Delete player"
     puts "5. Back to main menu"
-    puts
+    puts "==============================\n"
   end
 
   def select_player
