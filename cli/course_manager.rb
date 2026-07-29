@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require "readline"
+require "terminal-table"
 
 class CourseManager
   def run
     loop do
       display_menu
 
-      choice = Readline.readline("Choose an option: ", true).chomp
+      choice = Readline.readline("Choose an option: ".red, true).chomp
 
       case choice
       when "1"
@@ -51,10 +52,14 @@ class CourseManager
       return courses
     end
 
-    puts "Courses:"
-    courses.each_with_index do |course, index|
-      puts " #{index + 1}. #{course.name} (Par #{course.par})"
+    table = Terminal::Table.new do |t|
+      t.headings = ["#", "Name", "Par"]
+      t.rows = courses.each_with_index.map do |course, index|
+        [index + 1, course.name, course.par]
+      end
     end
+
+    puts table
 
     courses
   end
@@ -92,13 +97,15 @@ class CourseManager
   private
 
   def display_menu
-    puts "== Course Management =="
+    puts "\n==============================".green
+    puts "      Course Management       ".red.bold
+    puts "==============================".green
     puts "1. Add course"
     puts "2. List courses"
     puts "3. Update course"
     puts "4. Delete course"
     puts "5. Back to main menu"
-    puts
+    puts "==============================\n".green
   end
 
   def select_course

@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
 require "readline"
+require "colorize"
+require "tty-font"
 require_relative "../config/environment"
 require_relative "player_manager"
 require_relative "course_manager"
@@ -8,13 +10,23 @@ require_relative "round_manager"
 
 class Menu
   def run
-    puts "Welcome to Golf Score Tracker!"
+    font = TTY::Font.new(:doom)
+    puts font.write("Welcome").red
+        puts <<~ART
+         '                   .  .
+           \\              .         ' .             |>6>> 
+          O>>         .                 'o           |
+           \\       .                                |
+           /\\    .                                  |
+          / /  .'                                    |
+        ^^^^^^^`^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ART
     puts
 
     loop do
       display_menu
 
-      choice = Readline.readline("Choose an option: ", true).chomp
+      choice = Readline.readline("Choose an option: ".red, true).chomp
 
       case choice
       when "1"
@@ -24,7 +36,7 @@ class Menu
       when "3"
         RoundManager.new.run
       when "4"
-        puts "Goodbye!"
+        puts font.write("Goodbye!").red
         break
       else
         puts "Invalid option. Please try again."
@@ -37,12 +49,14 @@ class Menu
   private
 
   def display_menu
-    puts "== Main Menu =="
-    puts "1. Player Management"
-    puts "2. Course Management"
-    puts "3. Round Management"
+    puts "\n==============================".green
+    puts "      Golf Score Tracker        ".red.bold
+    puts "==============================".green
+    puts "1. Player Management 🏌️"
+    puts "2. Course Management ⛳"
+    puts "3. Round Management  🚩"
     puts "4. Exit"
-    puts
+    puts "==============================\n".green
   end
 end
 

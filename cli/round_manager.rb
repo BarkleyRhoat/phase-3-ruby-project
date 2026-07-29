@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require "readline"
+require "terminal-table"
 
 class RoundManager
   def run
     loop do
       display_menu
 
-      choice = Readline.readline("Choose an option: ", true).chomp
+      choice = Readline.readline("Choose an option: ".red, true).chomp
 
       case choice
       when "1"
@@ -60,10 +61,14 @@ class RoundManager
       return rounds
     end
 
-    puts "Rounds:"
-    rounds.each_with_index do |round, index|
-      puts " #{index + 1}. #{round.player.name} | #{round.course.name} | Score #{round.score} | #{round.date}"
+    table = Terminal::Table.new do |t|
+      t.headings = ["#", "Player", "Course", "Score", "Date"]
+      t.rows = rounds.each_with_index.map do |round, index|
+        [index + 1, round.player.name, round.course.name, round.score, round.date]
+      end
     end
+
+    puts table
 
     rounds
   end
@@ -108,10 +113,15 @@ class RoundManager
       return
     end
 
-    puts "Rounds for #{player.name}:"
-    rounds.each_with_index do |round, index|
-      puts " #{index + 1}. #{round.course.name} | Score #{round.score} | #{round.date}"
+    table = Terminal::Table.new do |t|
+      t.headings = ["#", "Course", "Score", "Date"]
+      t.rows = rounds.each_with_index.map do |round, index|
+        [index + 1, round.course.name, round.score, round.date]
+      end
     end
+
+    puts "Rounds for #{player.name}:"
+    puts table
   end
 
   def view_rounds_by_course
@@ -124,16 +134,23 @@ class RoundManager
       return
     end
 
-    puts "Rounds at #{course.name}:"
-    rounds.each_with_index do |round, index|
-      puts " #{index + 1}. #{round.player.name} | Score #{round.score} | #{round.date}"
+    table = Terminal::Table.new do |t|
+      t.headings = ["#", "Player", "Score", "Date"]
+      t.rows = rounds.each_with_index.map do |round, index|
+        [index + 1, round.player.name, round.score, round.date]
+      end
     end
+
+    puts "Rounds at #{course.name}:"
+    puts table
   end
 
   private
 
   def display_menu
-    puts "== Round Management =="
+    puts "\n==============================".green
+    puts "        Round Management       ".red.bold
+    puts "==============================".green
     puts "1. Add round"
     puts "2. List rounds"
     puts "3. Update round"
@@ -141,7 +158,7 @@ class RoundManager
     puts "5. View rounds by player"
     puts "6. View rounds by course"
     puts "7. Back to main menu"
-    puts
+    puts "==============================\n".green
   end
 
   def select_player
