@@ -18,6 +18,12 @@ gem "require_all", "~> 3.0"
 
 gem "standalone_migrations"
 
+gem "colorize"
+
+gem "tty-font"
+
+gem "terminal-table"
+
 # These gems will only be used when we are running the application locally
 group :development do
   gem "pry", "~> 0.14.1"

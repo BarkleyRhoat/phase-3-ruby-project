@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require "readline"
+require "terminal-table"
 
 class PlayerManager
   def run
     loop do
       display_menu
 
-      choice = Readline.readline("Choose an option: ", true).chomp
+      choice = Readline.readline("Choose an option: ".red, true).chomp
 
       case choice
       when "1"
@@ -49,10 +50,14 @@ class PlayerManager
       return players
     end
 
-    puts "Players:"
-    players.each_with_index do |player, index|
-      puts " #{index + 1}. #{player.name}"
+    table = Terminal::Table.new do |t|
+      t.headings = ["#", "Name"]
+      t.rows = players.each_with_index.map do |player, index|
+        [index + 1, player.name]
+      end
     end
+
+    puts table
 
     players
   end
@@ -87,15 +92,15 @@ class PlayerManager
   private
 
   def display_menu
-    puts "\n=============================="
-    puts "      Player Management       "
-    puts "=============================="
+    puts "\n==============================".green
+    puts "      Player Management       ".red.bold
+    puts "==============================".green
     puts "1. Add player"
     puts "2. List players"
     puts "3. Update player"
     puts "4. Delete player"
     puts "5. Back to main menu"
-    puts "==============================\n"
+    puts "==============================\n".green
   end
 
   def select_player
