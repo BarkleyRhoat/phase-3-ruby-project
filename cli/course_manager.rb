@@ -48,13 +48,15 @@ class CourseManager
 
     if courses.empty?
       puts "No courses found."
-      return
+      return courses
     end
 
     puts "Courses:"
-    courses.each do |course|
-      puts " #{course.id}. #{course.name} (Par #{course.par})"
+    courses.each_with_index do |course, index|
+      puts " #{index + 1}. #{course.name} (Par #{course.par})"
     end
+
+    courses
   end
 
   def update_course
@@ -100,10 +102,11 @@ class CourseManager
   end
 
   def select_course
-    list_courses
+    courses = list_courses
+    return nil if courses.empty?
 
-    id = Readline.readline("Enter course number: ", true)
-    course = Course.find_by(id: id)
+    input = Readline.readline("Enter course number: ", true).chomp.to_i
+    course = courses[input - 1]
 
     if course.nil?
       puts "❌ Course not found."
