@@ -57,13 +57,15 @@ class RoundManager
 
     if rounds.empty?
       puts "No rounds found."
-      return
+      return rounds
     end
 
     puts "Rounds:"
-    rounds.each do |round|
-      puts " #{round.id}. #{round.player.name} | #{round.course.name} | Score #{round.score} | #{round.date}"
+    rounds.each_with_index do |round, index|
+      puts " #{index + 1}. #{round.player.name} | #{round.course.name} | Score #{round.score} | #{round.date}"
     end
+
+    rounds
   end
 
   def update_round
@@ -107,8 +109,8 @@ class RoundManager
     end
 
     puts "Rounds for #{player.name}:"
-    rounds.each do |round|
-      puts " #{round.id}. #{round.course.name} | Score #{round.score} | #{round.date}"
+    rounds.each_with_index do |round, index|
+      puts " #{index + 1}. #{round.course.name} | Score #{round.score} | #{round.date}"
     end
   end
 
@@ -123,8 +125,8 @@ class RoundManager
     end
 
     puts "Rounds at #{course.name}:"
-    rounds.each do |round|
-      puts " #{round.id}. #{round.player.name} | Score #{round.score} | #{round.date}"
+    rounds.each_with_index do |round, index|
+      puts " #{index + 1}. #{round.player.name} | Score #{round.score} | #{round.date}"
     end
   end
 
@@ -151,12 +153,12 @@ class RoundManager
     end
 
     puts "Players:"
-    players.each do |player|
-      puts " #{player.id}. #{player.name}"
+    players.each_with_index do |player, index|
+      puts " #{index + 1}. #{player.name}"
     end
 
-    id = Readline.readline("Enter player number: ", true)
-    player = Player.find_by(id: id)
+    input = Readline.readline("Enter player number: ", true).chomp.to_i
+    player = players[input - 1]
 
     puts "❌ Player not found." if player.nil?
 
@@ -172,12 +174,12 @@ class RoundManager
     end
 
     puts "Courses:"
-    courses.each do |course|
-      puts " #{course.id}. #{course.name} (Par #{course.par})"
+    courses.each_with_index do |course, index|
+      puts " #{index + 1}. #{course.name} (Par #{course.par})"
     end
 
-    id = Readline.readline("Enter course number: ", true)
-    course = Course.find_by(id: id)
+    input = Readline.readline("Enter course number: ", true).chomp.to_i
+    course = courses[input - 1]
 
     puts "❌ Course not found." if course.nil?
 
@@ -185,20 +187,11 @@ class RoundManager
   end
 
   def select_round
-    rounds = Round.all
+    rounds = list_rounds
+    return nil if rounds.empty?
 
-    if rounds.empty?
-      puts "No rounds found."
-      return nil
-    end
-
-    puts "Rounds:"
-    rounds.each do |round|
-      puts " #{round.id}. #{round.player.name} | #{round.course.name} | Score #{round.score} | #{round.date}"
-    end
-
-    id = Readline.readline("Enter round number: ", true)
-    round = Round.find_by(id: id)
+    input = Readline.readline("Enter round number: ", true).chomp.to_i
+    round = rounds[input - 1]
 
     puts "❌ Round not found." if round.nil?
 

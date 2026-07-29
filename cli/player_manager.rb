@@ -46,13 +46,15 @@ class PlayerManager
 
     if players.empty?
       puts "No players found."
-      return
+      return players
     end
 
     puts "Players:"
-    players.each do |player|
-      puts " #{player.id}. #{player.name}"
+    players.each_with_index do |player, index|
+      puts " #{index + 1}. #{player.name}"
     end
+
+    players
   end
 
   def update_player
@@ -95,10 +97,11 @@ class PlayerManager
   end
 
   def select_player
-    list_players
+    players = list_players
+    return nil if players.empty?
 
-    id = Readline.readline("Enter player number: ", true)
-    player = Player.find_by(id: id)
+    input = Readline.readline("Enter player number: ", true).chomp.to_i
+    player = players[input - 1]
 
     if player.nil?
       puts "❌ Player not found."
