@@ -2,8 +2,14 @@
 
 require "readline"
 require "terminal-table"
+require_relative "statistics"
 
 class CourseManager
+
+  def initialize
+    @statistics = Statistics.new
+  end
+
   def run
     loop do
       display_menu
@@ -16,10 +22,12 @@ class CourseManager
       when "2"
         list_courses
       when "3"
-        update_course
+        show_record
       when "4"
-        delete_course
+        update_course
       when "5"
+        delete_course
+      when "6"
         break
       else
         puts "Invalid option. Please try again."
@@ -28,6 +36,10 @@ class CourseManager
       puts
     end
   end
+
+    def show_record
+      @statistics.course_records
+    end
 
   def add_course
     name = Readline.readline("Enter course name: ", true)
@@ -102,9 +114,10 @@ class CourseManager
     puts "==============================".green
     puts "1. Add course"
     puts "2. List courses"
-    puts "3. Update course"
-    puts "4. Delete course"
-    puts "5. Back to main menu"
+    puts "3. Course Records"
+    puts "4. Update course"
+    puts "5. Delete course"
+    puts "6. Back to main menu"
     puts "==============================\n".green
   end
 
