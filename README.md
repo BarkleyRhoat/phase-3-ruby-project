@@ -94,8 +94,13 @@ ruby cli/main.rb
 
 ## Validations
 
-- `Player.name` must be present
-- `Course.name` must be present
+- `Player.name` must be present and unique
+- `Course.name` must be present and unique
 - `Course.par` must be between 27 and 74
 - `Round.score` must be 9 or greater
 - `Round.date` cannot be in the future and must be a valid date
+
+## Nice to Haves
+
+- Add optional notes to each round so players can record details like weather, clubs used, or memorable shots
+- Achievement badges for players based on milestones like first round logged, first round under par, 10 rounds played, and playing every course
