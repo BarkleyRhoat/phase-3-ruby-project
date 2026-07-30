@@ -12,6 +12,9 @@ Ruby project for PCA. This command-line application allows you to track golf pla
 - [TTY::Font](https://github.com/piotrmurach/tty-font)
 - [Terminal::Table](https://github.com/tj/terminal-table)
 
+## Demo 
+![Project Demo](./assets/demo.gif)
+
 ## Features
 
 - Add, list, update, and delete golf players
