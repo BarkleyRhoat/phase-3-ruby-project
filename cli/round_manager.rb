@@ -113,6 +113,9 @@ class RoundManager
       return
     end
 
+    scores = rounds.map(&:score)
+    average = (scores.sum.to_f / scores.count).round(1)
+
     table = Terminal::Table.new do |t|
       t.headings = ["#", "Course", "Score", "Date"]
       t.rows = rounds.each_with_index.map do |round, index|
@@ -122,6 +125,7 @@ class RoundManager
 
     puts "Rounds for #{player.name}:"
     puts table
+    puts "Average score: #{average}"
   end
 
   def view_rounds_by_course
@@ -195,9 +199,11 @@ class RoundManager
     end
 
     table = Terminal::Table.new do |t|
-      t.headings = ["#", "Name", "Par"]
+      t.headings = ["#", "Name", "Par", "Avg Score"]
       t.rows = courses.each_with_index.map do |course, index|
-        [index + 1, course.name, course.par]
+        scores = course.rounds.map(&:score)
+        average = scores.empty? ? "N/A" : (scores.sum.to_f / scores.count).round(1)
+        [index + 1, course.name, course.par, average]
       end
     end
 

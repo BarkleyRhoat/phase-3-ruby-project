@@ -2,8 +2,13 @@
 
 require "readline"
 require "terminal-table"
+require_relative "statistics"
 
 class PlayerManager
+  def initialize
+    @statistics = Statistics.new
+  end
+
   def run
     loop do
       display_menu
@@ -16,10 +21,12 @@ class PlayerManager
       when "2"
         list_players
       when "3"
-        update_player
+        show_leaderboard
       when "4"
-        delete_player
+        update_player
       when "5"
+        delete_player
+      when "6"
         break
       else
         puts "Invalid option. Please try again."
@@ -27,6 +34,10 @@ class PlayerManager
 
       puts
     end
+  end
+
+  def show_leaderboard
+    @statistics.player_leaderboard
   end
 
   def add_player
@@ -97,9 +108,10 @@ class PlayerManager
     puts "==============================".green
     puts "1. Add player"
     puts "2. List players"
-    puts "3. Update player"
-    puts "4. Delete player"
-    puts "5. Back to main menu"
+    puts "3. Leaderboard"
+    puts "4. Update player"
+    puts "5. Delete player"
+    puts "6. Back to main menu"
     puts "==============================\n".green
   end
 
