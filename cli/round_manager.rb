@@ -2,13 +2,16 @@
 
 require "readline"
 require "terminal-table"
+require_relative "color_helper"
 
 class RoundManager
+  include ColorHelper
+
   def run
     loop do
       display_menu
 
-      choice = Readline.readline("Choose an option: ".red, true).chomp
+      choice = Readline.readline(prompt("Choose an option: "), true).chomp
 
       case choice
       when "1"
@@ -26,7 +29,7 @@ class RoundManager
       when "7"
         break
       else
-        puts "Invalid option. Please try again."
+        puts error("Invalid option. Please try again.")
       end
 
       puts
@@ -40,16 +43,16 @@ class RoundManager
     course = select_course
     return unless course
 
-    score = Readline.readline("Enter score: ", true).chomp.to_i
-    date = Readline.readline("Enter date (YYYY-MM-DD): ", true)
+    score = Readline.readline(prompt("Enter score: "), true).chomp.to_i
+    date = Readline.readline(prompt("Enter date (YYYY-MM-DD): "), true)
 
     round = Round.new(player: player, course: course, score: score, date: date)
 
     if round.save
-      puts "✅ Round logged for #{player.name} at #{course.name}."
+      puts success("✅ Round logged for #{player.name} at #{course.name}.")
     else
-      puts "❌ Failed to log round:"
-      round.errors.full_messages.each { |msg| puts " - #{msg}" }
+      puts error("❌ Failed to log round:")
+      round.errors.full_messages.each { |msg| puts error(" - #{msg}") }
     end
   end
 
@@ -57,7 +60,7 @@ class RoundManager
     rounds = Round.all
 
     if rounds.empty?
-      puts "No rounds found."
+      puts info("No rounds found.")
       return rounds
     end
 
@@ -77,21 +80,21 @@ class RoundManager
     round = select_round
     return unless round
 
-    puts "Current score: #{round.score}"
-    score_input = Readline.readline("Enter new score (press Enter to keep #{round.score}): ", true).chomp
+    puts info("Current score: #{round.score}")
+    score_input = Readline.readline(prompt("Enter new score (press Enter to keep #{round.score}): "), true).chomp
     score = score_input.empty? ? round.score : score_input.to_i
 
-    puts "Current date: #{round.date}"
-    date = Readline.readline("Enter new date (press Enter to keep '#{round.date}'): ", true)
+    puts info("Current date: #{round.date}")
+    date = Readline.readline(prompt("Enter new date (press Enter to keep '#{round.date}'): "), true)
 
     round.score = score
     round.date = date unless date.empty?
 
     if round.save
-      puts "✅ Round updated."
+      puts success("✅ Round updated.")
     else
-      puts "❌ Failed to update round:"
-      round.errors.full_messages.each { |msg| puts " - #{msg}" }
+      puts error("❌ Failed to update round:")
+      round.errors.full_messages.each { |msg| puts error(" - #{msg}") }
     end
   end
 
@@ -100,7 +103,7 @@ class RoundManager
     return unless round
 
     round.destroy
-    puts "✅ Round deleted."
+    puts success("✅ Round deleted.")
   end
 
   def view_rounds_by_player
@@ -109,7 +112,7 @@ class RoundManager
 
     rounds = player.rounds
     if rounds.empty?
-      puts "No rounds found for #{player.name}."
+      puts info("No rounds found for #{player.name}.")
       return
     end
 
@@ -120,7 +123,7 @@ class RoundManager
       end
     end
 
-    puts "Rounds for #{player.name}:"
+    puts info("Rounds for #{player.name}:")
     puts table
   end
 
@@ -130,7 +133,7 @@ class RoundManager
 
     rounds = course.rounds
     if rounds.empty?
-      puts "No rounds found at #{course.name}."
+      puts info("No rounds found at #{course.name}.")
       return
     end
 
@@ -141,16 +144,16 @@ class RoundManager
       end
     end
 
-    puts "Rounds at #{course.name}:"
+    puts info("Rounds at #{course.name}:")
     puts table
   end
 
   private
 
   def display_menu
-    puts "\n==============================".green
-    puts "        Round Management       ".red.bold
-    puts "==============================".green
+    puts header_border("\n==============================")
+    puts header_title("        Round Management       ")
+    puts header_border("==============================")
     puts "1. Add round"
     puts "2. List rounds"
     puts "3. Update round"
@@ -158,14 +161,14 @@ class RoundManager
     puts "5. View rounds by player"
     puts "6. View rounds by course"
     puts "7. Back to main menu"
-    puts "==============================\n".green
+    puts header_border("==============================\n")
   end
 
   def select_player
     players = Player.all
 
     if players.empty?
-      puts "No players found."
+      puts info("No players found.")
       return nil
     end
 
@@ -174,10 +177,10 @@ class RoundManager
       puts " #{index + 1}. #{player.name}"
     end
 
-    input = Readline.readline("Enter player number: ", true).chomp.to_i
+    input = Readline.readline(prompt("Enter player number: "), true).chomp.to_i
     player = players[input - 1]
 
-    puts "❌ Player not found." if player.nil?
+    puts error("❌ Player not found.") if player.nil?
 
     player
   end
@@ -186,7 +189,7 @@ class RoundManager
     courses = Course.all
 
     if courses.empty?
-      puts "No courses found."
+      puts info("No courses found.")
       return nil
     end
 
@@ -195,10 +198,10 @@ class RoundManager
       puts " #{index + 1}. #{course.name} (Par #{course.par})"
     end
 
-    input = Readline.readline("Enter course number: ", true).chomp.to_i
+    input = Readline.readline(prompt("Enter course number: "), true).chomp.to_i
     course = courses[input - 1]
 
-    puts "❌ Course not found." if course.nil?
+    puts error("❌ Course not found.") if course.nil?
 
     course
   end
@@ -207,10 +210,10 @@ class RoundManager
     rounds = list_rounds
     return nil if rounds.empty?
 
-    input = Readline.readline("Enter round number: ", true).chomp.to_i
+    input = Readline.readline(prompt("Enter round number: "), true).chomp.to_i
     round = rounds[input - 1]
 
-    puts "❌ Round not found." if round.nil?
+    puts error("❌ Round not found.") if round.nil?
 
     round
   end

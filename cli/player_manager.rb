@@ -2,13 +2,16 @@
 
 require "readline"
 require "terminal-table"
+require_relative "color_helper"
 
 class PlayerManager
+  include ColorHelper
+
   def run
     loop do
       display_menu
 
-      choice = Readline.readline("Choose an option: ".red, true).chomp
+      choice = Readline.readline(prompt("Choose an option: "), true).chomp
 
       case choice
       when "1"
@@ -22,7 +25,7 @@ class PlayerManager
       when "5"
         break
       else
-        puts "Invalid option. Please try again."
+        puts error("Invalid option. Please try again.")
       end
 
       puts
@@ -30,15 +33,15 @@ class PlayerManager
   end
 
   def add_player
-    name = Readline.readline("Enter player name: ", true)
+    name = Readline.readline(prompt("Enter player name: "), true)
 
     player = Player.new(name: name)
 
     if player.save
-      puts "✅ Player '#{player.name}' created."
+      puts success("✅ Player '#{player.name}' created.")
     else
-      puts "❌ Failed to create player:"
-      player.errors.full_messages.each { |msg| puts " - #{msg}" }
+      puts error("❌ Failed to create player:")
+      player.errors.full_messages.each { |msg| puts error(" - #{msg}") }
     end
   end
 
@@ -46,7 +49,7 @@ class PlayerManager
     players = Player.all
 
     if players.empty?
-      puts "No players found."
+      puts info("No players found.")
       return players
     end
 
@@ -66,18 +69,18 @@ class PlayerManager
     player = select_player
     return unless player
 
-    puts "Current name: #{player.name}"
-    name = Readline.readline("Enter new name (press Enter to keep '#{player.name}'): ", true)
+    puts info("Current name: #{player.name}")
+    name = Readline.readline(prompt("Enter new name (press Enter to keep '#{player.name}'): "), true)
 
     return if name.empty?
 
     player.name = name
 
     if player.save
-      puts "✅ Player updated to '#{player.name}'."
+      puts success("✅ Player updated to '#{player.name}'.")
     else
-      puts "❌ Failed to update player:"
-      player.errors.full_messages.each { |msg| puts " - #{msg}" }
+      puts error("❌ Failed to update player:")
+      player.errors.full_messages.each { |msg| puts error(" - #{msg}") }
     end
   end
 
@@ -86,32 +89,32 @@ class PlayerManager
     return unless player
 
     player.destroy
-    puts "✅ Player '#{player.name}' deleted."
+    puts success("✅ Player '#{player.name}' deleted.")
   end
 
   private
 
   def display_menu
-    puts "\n==============================".green
-    puts "      Player Management       ".red.bold
-    puts "==============================".green
+    puts header_border("\n==============================")
+    puts header_title("      Player Management       ")
+    puts header_border("==============================")
     puts "1. Add player"
     puts "2. List players"
     puts "3. Update player"
     puts "4. Delete player"
     puts "5. Back to main menu"
-    puts "==============================\n".green
+    puts header_border("==============================\n")
   end
 
   def select_player
     players = list_players
     return nil if players.empty?
 
-    input = Readline.readline("Enter player number: ", true).chomp.to_i
+    input = Readline.readline(prompt("Enter player number: "), true).chomp.to_i
     player = players[input - 1]
 
     if player.nil?
-      puts "❌ Player not found."
+      puts error("❌ Player not found.")
       return nil
     end
 
