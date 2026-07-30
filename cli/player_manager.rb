@@ -2,10 +2,19 @@
 
 require "readline"
 require "terminal-table"
+require_relative "statistics"
+require_relative "confirmation_helper"
+require_relative "selection_helper"
 require_relative "color_helper"
 
 class PlayerManager
+  include ConfirmationHelper
+  include SelectionHelper
   include ColorHelper
+
+  def initialize
+    @statistics = Statistics.new
+  end
 
   def run
     loop do
@@ -19,10 +28,12 @@ class PlayerManager
       when "2"
         list_players
       when "3"
-        update_player
+        show_leaderboard
       when "4"
-        delete_player
+        update_player
       when "5"
+        delete_player
+      when "6"
         break
       else
         puts error("Invalid option. Please try again.")
@@ -30,6 +41,10 @@ class PlayerManager
 
       puts
     end
+  end
+
+  def show_leaderboard
+    @statistics.player_leaderboard
   end
 
   def add_player
@@ -88,6 +103,8 @@ class PlayerManager
     player = select_player
     return unless player
 
+    return unless confirm?("Delete player '#{player.name}' and all rounds?")
+
     player.destroy
     puts success("✅ Player '#{player.name}' deleted.")
   end
@@ -100,24 +117,14 @@ class PlayerManager
     puts header_border("==============================")
     puts "1. Add player"
     puts "2. List players"
-    puts "3. Update player"
-    puts "4. Delete player"
-    puts "5. Back to main menu"
+    puts "3. Leaderboard"
+    puts "4. Update player"
+    puts "5. Delete player"
+    puts "6. Back to main menu"
     puts header_border("==============================\n")
   end
 
   def select_player
-    players = list_players
-    return nil if players.empty?
-
-    input = Readline.readline(prompt("Enter player number: "), true).chomp.to_i
-    player = players[input - 1]
-
-    if player.nil?
-      puts error("❌ Player not found.")
-      return nil
-    end
-
-    player
+    select_from_list(Player.all, "player", "Name") { |player| [player.name] }
   end
 end

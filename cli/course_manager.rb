@@ -2,10 +2,19 @@
 
 require "readline"
 require "terminal-table"
+require_relative "statistics"
+require_relative "confirmation_helper"
+require_relative "selection_helper"
 require_relative "color_helper"
 
 class CourseManager
+  include ConfirmationHelper
+  include SelectionHelper
   include ColorHelper
+
+  def initialize
+    @statistics = Statistics.new
+  end
 
   def run
     loop do
@@ -19,10 +28,12 @@ class CourseManager
       when "2"
         list_courses
       when "3"
-        update_course
+        show_record
       when "4"
-        delete_course
+        update_course
       when "5"
+        delete_course
+      when "6"
         break
       else
         puts error("Invalid option. Please try again.")
@@ -31,6 +42,10 @@ class CourseManager
       puts
     end
   end
+
+    def show_record
+      @statistics.course_records
+    end
 
   def add_course
     name = Readline.readline(prompt("Enter course name: "), true)
@@ -56,9 +71,11 @@ class CourseManager
     end
 
     table = Terminal::Table.new do |t|
-      t.headings = ["#", "Name", "Par"]
+      t.headings = ["#", "Name", "Par", "Average Score"]
       t.rows = courses.each_with_index.map do |course, index|
-        [index + 1, course.name, course.par]
+        scores = course.rounds.map(&:score)
+        average = scores.empty? ? "N/A" : (scores.sum.to_f / scores.count).round(1)
+        [index + 1, course.name, course.par, average]
       end
     end
 
@@ -93,6 +110,8 @@ class CourseManager
     course = select_course
     return unless course
 
+    return unless confirm?("Delete course '#{course.name}' and all rounds played there?")
+
     course.destroy
     puts success("✅ Course '#{course.name}' deleted.")
   end
@@ -105,24 +124,14 @@ class CourseManager
     puts header_border("==============================")
     puts "1. Add course"
     puts "2. List courses"
-    puts "3. Update course"
-    puts "4. Delete course"
-    puts "5. Back to main menu"
+    puts "3. Course Records"
+    puts "4. Update course"
+    puts "5. Delete course"
+    puts "6. Back to main menu"
     puts header_border("==============================\n")
   end
 
   def select_course
-    courses = list_courses
-    return nil if courses.empty?
-
-    input = Readline.readline(prompt("Enter course number: "), true).chomp.to_i
-    course = courses[input - 1]
-
-    if course.nil?
-      puts error("❌ Course not found.")
-      return nil
-    end
-
-    course
+    select_from_list(Course.all, "course", "Name") { |course| [course.name] }
   end
 end

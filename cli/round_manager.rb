@@ -2,9 +2,13 @@
 
 require "readline"
 require "terminal-table"
+require_relative "confirmation_helper"
+require_relative "selection_helper"
 require_relative "color_helper"
 
 class RoundManager
+  include ConfirmationHelper
+  include SelectionHelper
   include ColorHelper
 
   def run
@@ -102,6 +106,8 @@ class RoundManager
     round = select_round
     return unless round
 
+    return unless confirm?("Delete round for '#{round.player.name}' at #{round.course.name}?")
+
     round.destroy
     puts success("✅ Round deleted.")
   end
@@ -116,6 +122,9 @@ class RoundManager
       return
     end
 
+    scores = rounds.map(&:score)
+    average = (scores.sum.to_f / scores.count).round(1)
+
     table = Terminal::Table.new do |t|
       t.headings = ["#", "Course", "Score", "Date"]
       t.rows = rounds.each_with_index.map do |round, index|
@@ -125,6 +134,7 @@ class RoundManager
 
     puts info("Rounds for #{player.name}:")
     puts table
+    puts "Average score: #{average}"
   end
 
   def view_rounds_by_course
@@ -165,56 +175,20 @@ class RoundManager
   end
 
   def select_player
-    players = Player.all
-
-    if players.empty?
-      puts info("No players found.")
-      return nil
-    end
-
-    puts "Players:"
-    players.each_with_index do |player, index|
-      puts " #{index + 1}. #{player.name}"
-    end
-
-    input = Readline.readline(prompt("Enter player number: "), true).chomp.to_i
-    player = players[input - 1]
-
-    puts error("❌ Player not found.") if player.nil?
-
-    player
+    select_from_list(Player.all, "player", "Name") { |player| [player.name] }
   end
 
   def select_course
-    courses = Course.all
-
-    if courses.empty?
-      puts info("No courses found.")
-      return nil
+    select_from_list(Course.all, "course", "Name", "Par", "Avg Score") do |course|
+      scores = course.rounds.map(&:score)
+      average = scores.empty? ? "N/A" : (scores.sum.to_f / scores.count).round(1)
+      [course.name, course.par, average]
     end
-
-    puts "Courses:"
-    courses.each_with_index do |course, index|
-      puts " #{index + 1}. #{course.name} (Par #{course.par})"
-    end
-
-    input = Readline.readline(prompt("Enter course number: "), true).chomp.to_i
-    course = courses[input - 1]
-
-    puts error("❌ Course not found.") if course.nil?
-
-    course
   end
 
   def select_round
-    rounds = list_rounds
-    return nil if rounds.empty?
-
-    input = Readline.readline(prompt("Enter round number: "), true).chomp.to_i
-    round = rounds[input - 1]
-
-    puts error("❌ Round not found.") if round.nil?
-
-    round
+    select_from_list(Round.all, "round", "Player", "Course", "Score", "Date") do |round|
+      [round.player.name, round.course.name, round.score, round.date]
+    end
   end
 end
