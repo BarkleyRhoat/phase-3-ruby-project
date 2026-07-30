@@ -1,5 +1,5 @@
 class Player < ActiveRecord::Base
   has_many :rounds, dependent: :destroy
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 end
