@@ -2,8 +2,10 @@
 
 require "readline"
 require "terminal-table"
-
+require_relative "confirmation_helper"
 class RoundManager
+  include ConfirmationHelper
+
   def run
     loop do
       display_menu
@@ -98,6 +100,8 @@ class RoundManager
   def delete_round
     round = select_round
     return unless round
+
+    return unless confirm?("Delete round for '#{round.player.name}at #{round.course.name}?")
 
     round.destroy
     puts "✅ Round deleted."

@@ -3,8 +3,11 @@
 require "readline"
 require "terminal-table"
 require_relative "statistics"
+require_relative "confirmation_helper"
 
 class PlayerManager
+  include ConfirmationHelper
+
   def initialize
     @statistics = Statistics.new
   end
@@ -95,6 +98,8 @@ class PlayerManager
   def delete_player
     player = select_player
     return unless player
+
+    return unless confirm?("Delete player '#{player.name}' and all rounds?")
 
     player.destroy
     puts "✅ Player '#{player.name}' deleted."
