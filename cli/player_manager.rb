@@ -4,9 +4,11 @@ require "readline"
 require "terminal-table"
 require_relative "statistics"
 require_relative "confirmation_helper"
+require_relative "selection_helper"
 
 class PlayerManager
   include ConfirmationHelper
+  include SelectionHelper
 
   def initialize
     @statistics = Statistics.new
@@ -121,17 +123,6 @@ class PlayerManager
   end
 
   def select_player
-    players = list_players
-    return nil if players.empty?
-
-    input = Readline.readline("Enter player number: ", true).chomp.to_i
-    player = players[input - 1]
-
-    if player.nil?
-      puts "❌ Player not found."
-      return nil
-    end
-
-    player
+    select_from_list(Player.all, "player", "Name") { |player| [player.name] }
   end
 end

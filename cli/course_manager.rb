@@ -4,9 +4,11 @@ require "readline"
 require "terminal-table"
 require_relative "statistics"
 require_relative "confirmation_helper"
+require_relative "selection_helper"
 
 class CourseManager
   include ConfirmationHelper
+  include SelectionHelper
 
   def initialize
     @statistics = Statistics.new
@@ -128,17 +130,6 @@ class CourseManager
   end
 
   def select_course
-    courses = list_courses
-    return nil if courses.empty?
-
-    input = Readline.readline("Enter course number: ", true).chomp.to_i
-    course = courses[input - 1]
-
-    if course.nil?
-      puts "❌ Course not found."
-      return nil
-    end
-
-    course
+    select_from_list(Course.all, "course", "Name") { |course| [course.name] }
   end
 end
