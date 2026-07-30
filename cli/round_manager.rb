@@ -3,8 +3,10 @@
 require "readline"
 require "terminal-table"
 require_relative "confirmation_helper"
+require_relative "selection_helper"
 class RoundManager
   include ConfirmationHelper
+  include SelectionHelper
 
   def run
     loop do
@@ -170,66 +172,20 @@ class RoundManager
   end
 
   def select_player
-    players = Player.all
-
-    if players.empty?
-      puts "No players found."
-      return nil
-    end
-
-    table = Terminal::Table.new do |t|
-      t.headings = ["#", "Name"]
-      t.rows = players.each_with_index.map do |player, index|
-        [index + 1, player.name]
-      end
-    end
-
-    puts table
-
-    input = Readline.readline("Enter player number: ", true).chomp.to_i
-    player = players[input - 1]
-
-    puts "❌ Player not found." if player.nil?
-
-    player
+    select_from_list(Player.all, "player", "Name") { |player| [player.name] }
   end
 
   def select_course
-    courses = Course.all
-
-    if courses.empty?
-      puts "No courses found."
-      return nil
+    select_from_list(Course.all, "course", "Name", "Par", "Avg Score") do |course|
+      scores = course.rounds.map(&:score)
+      average = scores.empty? ? "N/A" : (scores.sum.to_f / scores.count).round(1)
+      [course.name, course.par, average]
     end
-
-    table = Terminal::Table.new do |t|
-      t.headings = ["#", "Name", "Par", "Avg Score"]
-      t.rows = courses.each_with_index.map do |course, index|
-        scores = course.rounds.map(&:score)
-        average = scores.empty? ? "N/A" : (scores.sum.to_f / scores.count).round(1)
-        [index + 1, course.name, course.par, average]
-      end
-    end
-
-    puts table
-
-    input = Readline.readline("Enter course number: ", true).chomp.to_i
-    course = courses[input - 1]
-
-    puts "❌ Course not found." if course.nil?
-
-    course
   end
 
   def select_round
-    rounds = list_rounds
-    return nil if rounds.empty?
-
-    input = Readline.readline("Enter round number: ", true).chomp.to_i
-    round = rounds[input - 1]
-
-    puts "❌ Round not found." if round.nil?
-
-    round
+    select_from_list(Round.all, "round", "Player", "Course", "Score", "Date") do |round|
+      [round.player.name, round.course.name, round.score, round.date]
+    end
   end
 end
