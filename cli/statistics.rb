@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 require "terminal-table"
+require_relative "color_helper"
 
 class Statistics
+  include ColorHelper
+
   def player_leaderboard
     players = Player.all
 
     if players.empty?
-      puts "No players found."
+      puts info("No players found.")
       return
     end
 
@@ -39,7 +42,7 @@ class Statistics
     courses = Course.all
 
     if courses.empty?
-      puts "No courses found."
+      puts info("No courses found.")
       return
     end
 

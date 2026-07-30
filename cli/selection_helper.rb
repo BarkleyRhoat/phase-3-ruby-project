@@ -1,6 +1,10 @@
-#frozen_string_literal: true
+# frozen_string_literal: true
+
+require_relative "color_helper"
 
 module SelectionHelper
+  include ColorHelper
+
   def select_from_list(items, label, *columns)
     return nil if items.empty?
 
@@ -13,13 +17,13 @@ module SelectionHelper
 
     puts table
 
-    input = Readline.readline("Enter #{label} number: ", true).chomp.to_i
+    input = Readline.readline(prompt("Enter #{label} number: "), true).chomp.to_i
 
     if input < 1 || input > items.length
-      puts "❌ #{label.capitalize} not found."
+      puts error("❌ #{label.capitalize} not found.")
       return nil
     end
 
-    items[input -1]
+    items[input - 1]
   end
 end

@@ -7,11 +7,14 @@ require_relative "../config/environment"
 require_relative "player_manager"
 require_relative "course_manager"
 require_relative "round_manager"
+require_relative "color_helper"
 
 class Menu
+  include ColorHelper
+
   def run
     font = TTY::Font.new(:doom)
-    puts font.write("Welcome").red
+    puts header_title(font.write("Welcome"))
     puts <<~ART
          '                   .  .
            \\              .         ' .             |>6>> 
@@ -26,7 +29,7 @@ class Menu
     loop do
       display_menu
 
-      choice = Readline.readline("Choose an option: ".red, true).chomp
+      choice = Readline.readline(prompt("Choose an option: "), true).chomp
 
       case choice
       when "1"
@@ -36,10 +39,10 @@ class Menu
       when "3"
         RoundManager.new.run
       when "4"
-        puts font.write("Goodbye!").red
+        puts header_title(font.write("Goodbye!"))
         break
       else
-        puts "Invalid option. Please try again."
+        puts error("Invalid option. Please try again.")
       end
 
       puts
@@ -49,14 +52,14 @@ class Menu
   private
 
   def display_menu
-    puts "\n==============================".green
-    puts "      Golf Score Tracker        ".red.bold
-    puts "==============================".green
+    puts header_border("\n==============================")
+    puts header_title("      Golf Score Tracker        ")
+    puts header_border("==============================")
     puts "1. Player Management 🏌️"
     puts "2. Course Management ⛳"
     puts "3. Round Management  🚩"
     puts "4. Exit"
-    puts "==============================\n".green
+    puts header_border("==============================\n")
   end
 end
 

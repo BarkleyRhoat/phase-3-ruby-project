@@ -4,15 +4,18 @@ require "readline"
 require "terminal-table"
 require_relative "confirmation_helper"
 require_relative "selection_helper"
+require_relative "color_helper"
+
 class RoundManager
   include ConfirmationHelper
   include SelectionHelper
+  include ColorHelper
 
   def run
     loop do
       display_menu
 
-      choice = Readline.readline("Choose an option: ".red, true).chomp
+      choice = Readline.readline(prompt("Choose an option: "), true).chomp
 
       case choice
       when "1"
@@ -30,7 +33,7 @@ class RoundManager
       when "7"
         break
       else
-        puts "Invalid option. Please try again."
+        puts error("Invalid option. Please try again.")
       end
 
       puts
@@ -44,16 +47,16 @@ class RoundManager
     course = select_course
     return unless course
 
-    score = Readline.readline("Enter score: ", true).chomp.to_i
-    date = Readline.readline("Enter date (YYYY-MM-DD): ", true)
+    score = Readline.readline(prompt("Enter score: "), true).chomp.to_i
+    date = Readline.readline(prompt("Enter date (YYYY-MM-DD): "), true)
 
     round = Round.new(player: player, course: course, score: score, date: date)
 
     if round.save
-      puts "✅ Round logged for #{player.name} at #{course.name}."
+      puts success("✅ Round logged for #{player.name} at #{course.name}.")
     else
-      puts "❌ Failed to log round:"
-      round.errors.full_messages.each { |msg| puts " - #{msg}" }
+      puts error("❌ Failed to log round:")
+      round.errors.full_messages.each { |msg| puts error(" - #{msg}") }
     end
   end
 
@@ -61,7 +64,7 @@ class RoundManager
     rounds = Round.all
 
     if rounds.empty?
-      puts "No rounds found."
+      puts info("No rounds found.")
       return rounds
     end
 
@@ -81,21 +84,21 @@ class RoundManager
     round = select_round
     return unless round
 
-    puts "Current score: #{round.score}"
-    score_input = Readline.readline("Enter new score (press Enter to keep #{round.score}): ", true).chomp
+    puts info("Current score: #{round.score}")
+    score_input = Readline.readline(prompt("Enter new score (press Enter to keep #{round.score}): "), true).chomp
     score = score_input.empty? ? round.score : score_input.to_i
 
-    puts "Current date: #{round.date}"
-    date = Readline.readline("Enter new date (press Enter to keep '#{round.date}'): ", true)
+    puts info("Current date: #{round.date}")
+    date = Readline.readline(prompt("Enter new date (press Enter to keep '#{round.date}'): "), true)
 
     round.score = score
     round.date = date unless date.empty?
 
     if round.save
-      puts "✅ Round updated."
+      puts success("✅ Round updated.")
     else
-      puts "❌ Failed to update round:"
-      round.errors.full_messages.each { |msg| puts " - #{msg}" }
+      puts error("❌ Failed to update round:")
+      round.errors.full_messages.each { |msg| puts error(" - #{msg}") }
     end
   end
 
@@ -103,10 +106,10 @@ class RoundManager
     round = select_round
     return unless round
 
-    return unless confirm?("Delete round for '#{round.player.name}at #{round.course.name}?")
+    return unless confirm?("Delete round for '#{round.player.name}' at #{round.course.name}?")
 
     round.destroy
-    puts "✅ Round deleted."
+    puts success("✅ Round deleted.")
   end
 
   def view_rounds_by_player
@@ -115,7 +118,7 @@ class RoundManager
 
     rounds = player.rounds
     if rounds.empty?
-      puts "No rounds found for #{player.name}."
+      puts info("No rounds found for #{player.name}.")
       return
     end
 
@@ -129,7 +132,7 @@ class RoundManager
       end
     end
 
-    puts "Rounds for #{player.name}:"
+    puts info("Rounds for #{player.name}:")
     puts table
     puts "Average score: #{average}"
   end
@@ -140,7 +143,7 @@ class RoundManager
 
     rounds = course.rounds
     if rounds.empty?
-      puts "No rounds found at #{course.name}."
+      puts info("No rounds found at #{course.name}.")
       return
     end
 
@@ -151,16 +154,16 @@ class RoundManager
       end
     end
 
-    puts "Rounds at #{course.name}:"
+    puts info("Rounds at #{course.name}:")
     puts table
   end
 
   private
 
   def display_menu
-    puts "\n==============================".green
-    puts "        Round Management       ".red.bold
-    puts "==============================".green
+    puts header_border("\n==============================")
+    puts header_title("        Round Management       ")
+    puts header_border("==============================")
     puts "1. Add round"
     puts "2. List rounds"
     puts "3. Update round"
@@ -168,7 +171,7 @@ class RoundManager
     puts "5. View rounds by player"
     puts "6. View rounds by course"
     puts "7. Back to main menu"
-    puts "==============================\n".green
+    puts header_border("==============================\n")
   end
 
   def select_player
