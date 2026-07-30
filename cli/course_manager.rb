@@ -3,8 +3,10 @@
 require "readline"
 require "terminal-table"
 require_relative "statistics"
+require_relative "confirmation_helper"
 
 class CourseManager
+  include ConfirmationHelper
 
   def initialize
     @statistics = Statistics.new
@@ -103,6 +105,8 @@ class CourseManager
   def delete_course
     course = select_course
     return unless course
+
+    return unless confirm?("Delete course '#{course.name}' and all rounds played there?")
 
     course.destroy
     puts "✅ Course '#{course.name}' deleted."
