@@ -65,9 +65,11 @@ class CourseManager
     end
 
     table = Terminal::Table.new do |t|
-      t.headings = ["#", "Name", "Par"]
+      t.headings = ["#", "Name", "Par", "Average Score"]
       t.rows = courses.each_with_index.map do |course, index|
-        [index + 1, course.name, course.par]
+        scores = course.rounds.map(&:score)
+        average = scores.empty? ? "N/A" : (scores.sum.to_f / scores.count).round(1)
+        [index + 1, course.name, course.par, average]
       end
     end
 
